@@ -23,6 +23,9 @@ public class Player : MonoBehaviour
     // returns 'true' when tangible.
     private bool tangible = true;
 
+    // checks to see if the player can phase through things.
+    public bool canPhase = true;
+
     // force and speed cap
     public Vector2 force = new Vector2(1.0F, 1.0F);
     public Vector2 speedLimit = new Vector2(5.0F, 5.0F);
@@ -77,36 +80,44 @@ public class Player : MonoBehaviour
         MakeTangible();
     }
 
-    // on collision enter 2D
+    // on collision enter 2D (used if tangible)
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // collided with fish. Happens in fish script due to onCollision being used.
-        // if(collision.collider.tag == "Fish")
-        // {
-        //     // gets the fish component.
-        //     Fish fish = collision.collider.GetComponent<Fish>();
-        // 
-        //     // fish is hooked.
-        //     fish.Hooked(this);
-        // 
-        //     // fish on hook.
-        //     fishes.Add(fish);
-        // }
+        if (collision.gameObject.tag == "Stage" || collision.gameObject.tag == "Bounds")
+        {
+            // hit a stage bounds
+            if (collision.gameObject.tag == "Bounds")
+            {
+                MakeTangible(); // may not be needed.
+                canPhase = false;
+            }
+
+            // release the fish.
+            if (fishes.Count > 0)
+                ReleaseFishes();
+        }
     }
 
-    // on trigger enter 2D
+    // on collision exit 2D (used if tangible)
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        // left a stage bounds
+        if (collision.gameObject.tag == "Bounds")
+        {
+            canPhase = true;
+        }
+    }
+
+    // on trigger enter 2D (used if intangible) (can only collide with bounds)
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // this is part of the stage.
-        if(collision.tag == "Stage")
+        if(collision.tag == "Bounds")
         {
-            // hit the bottom of the map.
-            if(collision.name == "Bottom" || collision.name == "Floor")
-            {
-                // makes solid.
-                boxCol.isTrigger = false;
-                MakeTangible();
-            }
+            // makes solid.
+            boxCol.isTrigger = false;
+            MakeTangible();
+            canPhase = false;
 
             // releaes the fishes if any are on the hook.
             if (fishes.Count > 0)
@@ -236,27 +247,43 @@ public class Player : MonoBehaviour
         rigidBody.velocity = finalVel;
 
         // turn on intangibility when space is held down.
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(canPhase)
         {
-            MakeIntangible();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                MakeIntangible();
+            }
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                MakeTangible();
+            }
         }
-        else if(Input.GetKeyUp(KeyCode.Space))
-        {
-            MakeTangible();
-        }
+        
     }
 
     // fixed update
-    // private void FixedUpdate()
-    // {
-    //     // grabs current velocity
-    //     Vector2 newVel = rigidBody.velocity;
-    // 
-    //     // applies drag factor
-    //     newVel.Scale(GameplayManager.WaterDrag * Time.fixedDeltaTime);
-    // 
-    //     // sets new velocity.
-    //     rigidBody.velocity = newVel;
-    // 
-    // }
+    private void FixedUpdate()
+    {
+        // the drag doesn't get applied for the vertical due to gravity being in effect.
+
+        // grabs current velocity
+        Vector2 newVel = rigidBody.velocity;
+    
+        // applies drag factor
+        // newVel.Scale(GameplayManager.WaterDrag * Time.fixedDeltaTime);
+    
+        // check to see that the player is not moving.
+        if(Input.GetAxisRaw("Horizontal") == 0.0F)
+        {
+            newVel.x *= GameplayManager.WaterDrag.x * Time.fixedDeltaTime;
+        }
+
+        // stop if moving too slow
+        if (newVel.x == GameplayManager.StopSpeed.x)
+            newVel.x = 0.0F;
+
+        // sets new velocity.
+        rigidBody.velocity = newVel;
+    
+    }
 }

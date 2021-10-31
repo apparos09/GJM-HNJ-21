@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Stage
   - Fish
+  - Bounds
   layers:
   - Default
   - TransparentFX

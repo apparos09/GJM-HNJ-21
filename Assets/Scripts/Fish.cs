@@ -5,6 +5,9 @@ using UnityEngine;
 // the script for the fish.
 public class Fish : MonoBehaviour
 {
+    // the amount of fish in the scene.
+    static int fishCount = 0;
+
     // the parent transformation of the fish.
     private Player hook;
 
@@ -13,6 +16,13 @@ public class Fish : MonoBehaviour
 
     // the points for getting this fish.
     public float worth = 10;
+
+    // updates the fish count when the script is made.
+    private void Awake()
+    {
+        // increases the fish count (maybe move to start)?
+        fishCount++;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -36,17 +46,23 @@ public class Fish : MonoBehaviour
             if (player == hook)
                 return;
 
-            // checks to see if the hook has room for this fish.
-            bool added = player.AttachFish(this);
-
-            // fish added to hook.
-            if(added)
+            // hook is tangible.
+            if (player.IsTangible())
             {
-                Hooked(player);
+                // checks to see if the hook has room for this fish.
+                bool added = player.AttachFish(this);
+
+                // fish added to hook.
+                if (added)
+                {
+                    Hooked(player);
+                }
+
+                // save player.
+                hook = player;
             }
 
-            // save player.
-            hook = player;
+            
         }
     }
 
@@ -79,6 +95,7 @@ public class Fish : MonoBehaviour
     public void UnHook()
     {
         // removes the target.
+        hook = null;
         ctform.RemoveTarget();
         ctform.copy = false;
         transform.rotation = Quaternion.identity;
@@ -94,5 +111,11 @@ public class Fish : MonoBehaviour
     void Update()
     {
         // Debug.Log("On Hook: " + OnHook());
+    }
+
+    // decreases the fish count.
+    private void OnDestroy()
+    {
+        fishCount--;
     }
 }
