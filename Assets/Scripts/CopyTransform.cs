@@ -9,7 +9,7 @@ public class CopyTransform : MonoBehaviour
     public GameObject target;
 
     // have the camera follow.
-    public bool follow = true;
+    public bool copy = true;
 
     // movement of the attached object.
     [Header("Transformations")]
@@ -39,20 +39,25 @@ public class CopyTransform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // target set.
+        // sets the target.
         if(target != null)
-        {
-            lastTargetPos = target.transform.position;
-            lastTargetEulers = target.transform.eulerAngles;
-            lastTargetScale = transform.localScale;
-        }
+            SetTarget(target);
+    }
+    
+    // the new target.
+    public void SetTarget(GameObject newTarget)
+    {
+        target = newTarget;
+        lastTargetPos = target.transform.position;
+        lastTargetEulers = target.transform.eulerAngles;
+        lastTargetScale = transform.localScale;
     }
 
     // Update is called once per frame
     void Update()
     {
         // should not follow target.
-        if (!follow)
+        if (!copy)
             return;
 
         if(target == null)

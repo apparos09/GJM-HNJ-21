@@ -5,21 +5,150 @@ using UnityEngine;
 // player
 public class Player : MonoBehaviour
 {
+    // the sprite when tangible
+    public SpriteRenderer tangibleSprite;
+
+    // the sprite when intangible.
+    public SpriteRenderer intangibleSprite;
+
     // player's rigid body.
     public Rigidbody2D rigidBody;
-    
+
+    // the player's collider.
+    public BoxCollider2D boxCol;
+
+    // returns 'true' when tangible.
+    private bool tangible = true;
+
     // force and speed cap
     public Vector2 force = new Vector2(1.0F, 1.0F);
     public Vector2 speedLimit = new Vector2(5.0F, 5.0F);
 
     // TODO: setup water resistance.
 
+    [Header("Fish")]
+    // the hook that the fish attaches to. Used for visual connection
+    public GameObject hook;
+
+    // list of fishes the player has caught.
+    public List<Fish> fishes;
+
+    // amount of fish allowed on the hook.
+    public int fishLimit = 5;
+
     // Start is called before the first frame update
     void Start()
     {
+        // get sprites
+        if(tangibleSprite == null || intangibleSprite == null)
+        {
+            // gets sprite components in children.
+            SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
+
+            // set as sprite 1
+            if (tangibleSprite == null  && sprites.Length >= 1)
+                tangibleSprite = sprites[0];
+
+            // set as sprite 2
+            if (intangibleSprite == null && sprites.Length >= 2)
+                intangibleSprite = sprites[1];
+
+            // re-use sprite 1 is sprite 2 does not exist.
+            if (intangibleSprite == null)
+                intangibleSprite = tangibleSprite;
+        }
+
         // gets rigid body.
         if (rigidBody == null)
             rigidBody = GetComponent<Rigidbody2D>();
+
+        // gets the box collider.
+        if (boxCol == null)
+            boxCol = GetComponent<BoxCollider2D>();
+
+        // TODO: setup
+        //if(hook == null)
+
+
+        // object is tangible.
+        MakeTangible();
+    }
+
+    // on collision enter 2D
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // collided with fish. Happens in fish script due to onCollision being used.
+        // if(collision.collider.tag == "Fish")
+        // {
+        //     // gets the fish component.
+        //     Fish fish = collision.collider.GetComponent<Fish>();
+        // 
+        //     // fish is hooked.
+        //     fish.Hooked(this);
+        // 
+        //     // fish on hook.
+        //     fishes.Add(fish);
+        // }
+    }
+
+    // on trigger enter 2D
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // this is part of the stage.
+        if(collision.tag == "Stage")
+        {
+            // hit the bottom of the map.
+            if(collision.name == "Bottom" || collision.name == "Floor")
+            {
+                // makes solid.
+                boxCol.isTrigger = false;
+                MakeTangible();
+            }
+        }
+    }
+
+    // checks to see if the player is tangible.
+    public bool IsTangible()
+    {
+        return tangible;
+    }
+
+    // makes the object tangible.
+    public void MakeTangible()
+    {
+        tangibleSprite.enabled = true;
+        intangibleSprite.enabled = false;
+        tangible = true;
+        boxCol.isTrigger = false;
+    }
+
+    // checks to see if the player is intangible.
+    public bool IsIntangible()
+    {
+        return !tangible;
+    }
+
+    // makes the object intangible.
+    public void MakeIntangible()
+    {
+        tangibleSprite.enabled = false;
+        intangibleSprite.enabled = true;
+        tangible = false;
+        boxCol.isTrigger = true;
+    }
+
+    // adds a fish to the player's list if it's on the hook.
+    // if it has too many fish, it returns false.
+    public bool AddFish(Fish fish)
+    {
+        // adds a fish.
+        if(fishes.Count < fishLimit)
+        {
+            fishes.Add(fish);
+            return true;
+        }
+
+        return false;
     }
 
     // Update is called once per frame
@@ -54,19 +183,29 @@ public class Player : MonoBehaviour
 
         // sets final velocity.
         rigidBody.velocity = finalVel;
+
+        // turn on intangibility when space is held down.
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            MakeIntangible();
+        }
+        else if(Input.GetKeyUp(KeyCode.Space))
+        {
+            MakeTangible();
+        }
     }
 
     // fixed update
-    private void FixedUpdate()
-    {
-        // grabs current velocity
-        Vector2 newVel = rigidBody.velocity;
-
-        // applies drag factor
-        newVel.Scale(GameplayManager.WaterDrag * Time.fixedDeltaTime);
-
-        // sets new velocity.
-        rigidBody.velocity = newVel;
-
-    }
+    // private void FixedUpdate()
+    // {
+    //     // grabs current velocity
+    //     Vector2 newVel = rigidBody.velocity;
+    // 
+    //     // applies drag factor
+    //     newVel.Scale(GameplayManager.WaterDrag * Time.fixedDeltaTime);
+    // 
+    //     // sets new velocity.
+    //     rigidBody.velocity = newVel;
+    // 
+    // }
 }

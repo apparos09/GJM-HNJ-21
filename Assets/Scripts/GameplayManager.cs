@@ -12,7 +12,7 @@ public class GameplayManager : MonoBehaviour
     public float waterSurfacePosY = 0.0F;
 
     // the speed at which an object will stop.
-    private static Vector2 stopSpeed = new Vector3(0.001F, 0.001F);
+    private static Vector2 stopSpeed = new Vector3(0.0001F, 0.0001F);
     
     // the drag applied when going through water.
     private static Vector2 waterDrag = new Vector2(0.985F, 1.0F);
@@ -51,6 +51,19 @@ public class GameplayManager : MonoBehaviour
         return waterSurfacePosY - player.transform.position.y;
     }
 
+    // checks to see if the player is at or above the water's surface.
+    public bool PlayerAtOrAboveSurface()
+    {
+        // gets player's height
+        float depth = GetPlayerDistanceBelowSurface();
+
+        // check value.
+        if (depth <= 0.0F)
+            return true;
+        else
+            return false;
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -61,6 +74,9 @@ public class GameplayManager : MonoBehaviour
             timer -= Time.deltaTime;
             timer = (timer < 0.0F) ? 0.0F : timer;
         }
+
+        if (PlayerAtOrAboveSurface())
+            Debug.Log("Above Water");
             
     }
 }

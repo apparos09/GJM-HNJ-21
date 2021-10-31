@@ -65,7 +65,7 @@ public class TitleManager : MonoBehaviour
                 break;
 
             case 1: // 1920 X 1080
-                Screen.SetResolution(1920, 1080, FullScreenMode.Windowed);
+                Screen.SetResolution(1920, 1080, FullScreenMode.MaximizedWindow);
                 Screen.fullScreen = false;
                 break;
 
