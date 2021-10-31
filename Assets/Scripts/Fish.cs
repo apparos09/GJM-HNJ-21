@@ -11,6 +11,9 @@ public class Fish : MonoBehaviour
     // the copy transformation (because parenting didn't work for ome reason).
     public CopyTransform ctform;
 
+    // the points for getting this fish.
+    public float worth = 10;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +37,7 @@ public class Fish : MonoBehaviour
                 return;
 
             // checks to see if the hook has room for this fish.
-            bool added = player.AddFish(this);
+            bool added = player.AttachFish(this);
 
             // fish added to hook.
             if(added)
@@ -67,8 +70,18 @@ public class Fish : MonoBehaviour
         ctform.copy = true;
 
         // rotates fish to be 90 degrees.
-        // transform.rotation = Quaternion.identity;
-        // transform.Rotate(Vector3.forward, 90.0F);
+        transform.rotation = Quaternion.identity;
+        transform.Rotate(Vector3.forward, 90.0F);
+    }
+
+    // called when the fish becomes unhooked from the fishing rod. This causes the fish to let go.
+    // TODO: might just destroy the fish.
+    public void UnHook()
+    {
+        // removes the target.
+        ctform.RemoveTarget();
+        ctform.copy = false;
+        transform.rotation = Quaternion.identity;
     }
 
     // if on the hook, the original parent is not set as the current parent.

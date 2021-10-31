@@ -6,6 +6,7 @@ using UnityEngine;
 public class CopyTransform : MonoBehaviour
 {
     // follows the target, copying its position and rotation.
+    [Tooltip("The target to be copied. If setting target after Start(), use SetTarget().")]
     public GameObject target;
 
     // have the camera follow.
@@ -47,10 +48,20 @@ public class CopyTransform : MonoBehaviour
     // the new target.
     public void SetTarget(GameObject newTarget)
     {
+        // wants to remove target.
+        if (newTarget == null)
+            RemoveTarget();
+
         target = newTarget;
         lastTargetPos = target.transform.position;
         lastTargetEulers = target.transform.eulerAngles;
         lastTargetScale = transform.localScale;
+    }
+
+    // removes the target
+    public void RemoveTarget()
+    {
+        target = null;
     }
 
     // Update is called once per frame
@@ -60,6 +71,7 @@ public class CopyTransform : MonoBehaviour
         if (!copy)
             return;
 
+        // checks if target to follow.
         if(target == null)
         {
             Debug.LogAssertion("No target set.");
@@ -78,7 +90,12 @@ public class CopyTransform : MonoBehaviour
 
         // translates, rotates, then scales
         if (copyTranslation)
+        {
+            Quaternion origRot = transform.rotation;
+            transform.rotation = Quaternion.identity;
             transform.Translate(tlate);
+            transform.rotation = origRot;
+        }
         
         if(copyRotation)
             transform.Rotate(rot);

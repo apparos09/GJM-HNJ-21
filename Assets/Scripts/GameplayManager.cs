@@ -11,13 +11,16 @@ public class GameplayManager : MonoBehaviour
     // the water's surface
     public float waterSurfacePosY = 0.0F;
 
+    // the depth text (TODO: initialize in Start() if not set)
+    public TMPro.TextMeshProUGUI depthText;
+
     // the speed at which an object will stop.
     private static Vector2 stopSpeed = new Vector3(0.0001F, 0.0001F);
     
     // the drag applied when going through water.
     private static Vector2 waterDrag = new Vector2(0.985F, 1.0F);
 
-    // the itmer
+    // the timer
     [Header("Timer")]
     // gets the game timer
     public float timer = 100.0F;
@@ -64,7 +67,6 @@ public class GameplayManager : MonoBehaviour
             return false;
     }
 
-
     // Update is called once per frame
     void Update()
     {
@@ -75,8 +77,13 @@ public class GameplayManager : MonoBehaviour
             timer = (timer < 0.0F) ? 0.0F : timer;
         }
 
+        // catches the fish.
         if (PlayerAtOrAboveSurface())
+        {
             Debug.Log("Above Water");
+            player.CatchFish();
+        }
+            
             
     }
 }

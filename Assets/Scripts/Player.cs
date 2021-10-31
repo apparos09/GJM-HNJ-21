@@ -17,6 +17,9 @@ public class Player : MonoBehaviour
     // the player's collider.
     public BoxCollider2D boxCol;
 
+    // the player's score
+    public float score = 0.0f;
+
     // returns 'true' when tangible.
     private bool tangible = true;
 
@@ -31,7 +34,7 @@ public class Player : MonoBehaviour
     public GameObject hook;
 
     // list of fishes the player has caught.
-    public List<Fish> fishes;
+    public List<Fish> fishes = new List<Fish>();
 
     // amount of fish allowed on the hook.
     public int fishLimit = 5;
@@ -104,6 +107,10 @@ public class Player : MonoBehaviour
                 boxCol.isTrigger = false;
                 MakeTangible();
             }
+
+            // releaes the fishes if any are on the hook.
+            if (fishes.Count > 0)
+                ReleaseFishes();
         }
     }
 
@@ -116,9 +123,12 @@ public class Player : MonoBehaviour
     // makes the object tangible.
     public void MakeTangible()
     {
+        // changes sprites
         tangibleSprite.enabled = true;
         intangibleSprite.enabled = false;
         tangible = true;
+
+        // changes collider
         boxCol.isTrigger = false;
     }
 
@@ -131,15 +141,23 @@ public class Player : MonoBehaviour
     // makes the object intangible.
     public void MakeIntangible()
     {
+        // changes sprites
         tangibleSprite.enabled = false;
         intangibleSprite.enabled = true;
         tangible = false;
+        
+        // changes collider
         boxCol.isTrigger = true;
+
+        // releases fishes on the hook.
+        if (fishes.Count > 0)
+            ReleaseFishes();
+
     }
 
     // adds a fish to the player's list if it's on the hook.
     // if it has too many fish, it returns false.
-    public bool AddFish(Fish fish)
+    public bool AttachFish(Fish fish)
     {
         // adds a fish.
         if(fishes.Count < fishLimit)
@@ -149,6 +167,39 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    // catches the fish on the hook.
+    public void CatchFish()
+    {
+        // while there are still fish to catch on the hook.
+        while(fishes.Count > 0)
+        {
+            // gets the fish nad removes it.
+            Fish fish = fishes[0];
+            fishes.RemoveAt(0);
+
+            // updates score
+            if (fish != null)
+            {
+                score += fish.worth;
+                Destroy(fish.gameObject);
+            }
+        }
+    }
+
+    // releashes all the fish in the player's list.
+    public void ReleaseFishes()
+    {
+        // unhooks the fishes and clears the list.
+        foreach(Fish fish in fishes)
+        {
+            if (fish != null)
+                fish.UnHook();
+        }
+
+        // removes all.
+        fishes.Clear();
     }
 
     // Update is called once per frame
