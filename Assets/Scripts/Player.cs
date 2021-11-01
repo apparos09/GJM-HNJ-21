@@ -27,8 +27,8 @@ public class Player : MonoBehaviour
     public bool canPhase = true;
 
     // force and speed cap
-    public Vector2 force = new Vector2(1.0F, 1.0F);
-    public Vector2 speedLimit = new Vector2(5.0F, 5.0F);
+    public Vector2 force = new Vector2(1.5F, 1.5F);
+    public Vector2 speedLimit = new Vector2(7.5F, 7.5F);
 
     // TODO: setup water resistance.
 

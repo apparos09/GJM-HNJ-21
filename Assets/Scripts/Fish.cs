@@ -11,6 +11,9 @@ public class Fish : MonoBehaviour
     // the game manager.
     public GameplayManager gameManager;
 
+    // the fish's sprite.
+    public SpriteRenderer sprite;
+
     // the fish's rigidbody.
     public Rigidbody2D rigidBody;
 
@@ -60,6 +63,10 @@ public class Fish : MonoBehaviour
         // gets game manager
         if (gameManager == null)
             gameManager = FindObjectOfType<GameplayManager>();
+
+        // gets the sprite renderer
+        if (sprite == null)
+            sprite = GetComponentInChildren<SpriteRenderer>();
 
         // gets the rigidbody.
         if (rigidBody == null)
@@ -112,6 +119,9 @@ public class Fish : MonoBehaviour
             rigidBody.AddForce(-swimDirec * swimDirec.magnitude * Time.deltaTime, ForceMode2D.Impulse);
 
             swimDirec = -swimDirec;
+
+            // flip sprite.
+            sprite.flipX = (swimDirec.x < 0.0F) ? false : true;
 
             // // TODO: may not be needed.
             // // random number
@@ -197,8 +207,13 @@ public class Fish : MonoBehaviour
 
         // rotates fish to be 90 degrees.
         transform.rotation = Quaternion.identity;
-        transform.Rotate(Vector3.forward, 90.0F);
-        
+
+        // if the sprite is flipped, rotate the other direction.
+        if(sprite.flipX)
+            transform.Rotate(Vector3.forward, 90.0F);
+        else
+            transform.Rotate(Vector3.forward, -90.0F);
+
         // physics
         bodyCol.isTrigger = true; // change collision to trigger
         rigidBody.velocity = Vector3.zero;
@@ -238,6 +253,9 @@ public class Fish : MonoBehaviour
 
             // random orientation
             swimDirec = GameplayPhysics.RotateEuler(swimDirec, Random.Range(0.0f, 360.0F), true);
+
+            // flip sprite.
+            sprite.flipX = (swimDirec.x < 0.0F) ? false : true;
         }
 
         // cap the velocity.
@@ -250,7 +268,11 @@ public class Fish : MonoBehaviour
             rigidBody.velocity = newVel;
         }
 
+        // add force
         rigidBody.AddForce(swimDirec * swimSpeed * Time.deltaTime, ForceMode2D.Impulse);
+
+        // reset timer.
+        direcChangeTimer = direcChangeStartTime;
     }
 
     // Update is called once per frame
@@ -267,6 +289,10 @@ public class Fish : MonoBehaviour
         {
             // reverses direction and applies force
             swimDirec = GameplayPhysics.RotateEuler(swimDirec, 180.0F, true);
+
+            // flip sprite.
+            sprite.flipX = (swimDirec.x < 0.0F) ? false : true;
+
             rigidBody.AddForce(Vector2.down * swimSpeedMax * Time.deltaTime, ForceMode2D.Impulse);
         }
     }

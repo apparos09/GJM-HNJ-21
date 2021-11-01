@@ -46,12 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   waterSurfacePosY: 10
+  setSurfacePosUsingObject: 1
   depthText: {fileID: 0}
-  seaLeftWall: {fileID: 0}
-  seaRightWall: {fileID: 0}
-  seaBottom: {fileID: 0}
-  skyTop: {fileID: 0}
   timer: 100
+  timerStart: 100
   pausedTimer: 0
   timerText: {fileID: 0}
 --- !u!114 &5614403363873146655
@@ -73,5 +71,8 @@ MonoBehaviour:
   cooldownStartTime: 2.5
   useCooldown: 1
   fishPrefabs:
-  - Prefabs/Fish
+  - {fileID: 3924078104877684991, guid: 3cc3bd9bf75e40d4a9f17f4757a343a1, type: 3}
+  - {fileID: 3924078104877684991, guid: ed64b4194620b904cbe3fa0b784f0002, type: 3}
+  - {fileID: 3924078104877684991, guid: fe0025f9a86924a43ad78f98a21f0589, type: 3}
+  - {fileID: 3924078104877684991, guid: c3a9c4f08fb632341b8a709ab8079761, type: 3}
   spawnPositions: []
