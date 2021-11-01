@@ -240,6 +240,10 @@ public class Fish : MonoBehaviour
     // called to make the fish swim.
     public void Swim()
     {
+        // if the game manager is paused, don't update anything.
+        if (gameManager.IsPaused())
+            return;
+
         // reduce timer
         direcChangeTimer -= Time.deltaTime;
 

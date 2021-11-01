@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
+// manages the game.
 public class GameplayManager : MonoBehaviour
 {
+    // if 'true', the game is paused.
+    public bool pausedGame = false;
+
     // the player
     public Player player;
 
@@ -58,6 +64,39 @@ public class GameplayManager : MonoBehaviour
         timer = timerStart;
     }
 
+    // returns 'true' if teh game is paused.
+    public bool IsPaused()
+    {
+        return pausedGame;
+    }
+
+    // pauses the game.
+    public void PauseGame()
+    {
+        pausedGame = true;
+    }
+
+    // unpauses the game.
+    public void UnpauseGame()
+    {
+        pausedGame = false;
+    }
+
+    // toggles pause to either pause or unpause the game.
+    public void PauseToggle()
+    {
+        pausedGame = !pausedGame;
+        Time.timeScale = (pausedGame) ? 0.0F : 1.0F;
+    }
+
+    // quits the game, returning to the title screen.
+    public void GameQuit()
+    {
+        // returns to the title screen
+        SceneManager.LoadScene("TitleScene");
+
+    }
+
     // ends the game
     public void GameOver()
     {
@@ -87,12 +126,8 @@ public class GameplayManager : MonoBehaviour
         // set values
         gi.finalScore = player.score;
         gi.gameLength = timerStart;
-    }
 
-    // quits the game
-    public void GameQuit()
-    {
-
+        SceneManager.LoadScene("EndScene");
     }
 
     // gets the player's distance from the surface.
@@ -117,6 +152,10 @@ public class GameplayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if the game is paused, don't update anything.
+        if (pausedGame)
+            return;
+
         // reduces the timer
         if(!pausedTimer)
         {
@@ -128,8 +167,8 @@ public class GameplayManager : MonoBehaviour
                 timerText.text = timer.ToString("F3");
 
             // changes the scene.
-            if(timer <= 0)
-                SceneHelper.ChangeScene("EndScene");
+            if (timer <= 0)
+                GameOver();
         }
 
         // updates depth text
@@ -146,7 +185,7 @@ public class GameplayManager : MonoBehaviour
         // catches the fish.
         if (PlayerAtOrAboveSurface())
         {
-            Debug.Log("Above Water");
+            // Debug.Log("Above Water");
             player.CatchFish();
         }
             

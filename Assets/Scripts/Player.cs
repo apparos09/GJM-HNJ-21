@@ -5,6 +5,9 @@ using UnityEngine;
 // player
 public class Player : MonoBehaviour
 {
+    // the game manager.
+    public GameplayManager gameManager;
+
     // the sprite when tangible
     public SpriteRenderer tangibleSprite;
 
@@ -45,6 +48,10 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // finds the game manager if it's not set.
+        if (gameManager == null)
+            gameManager = FindObjectOfType<GameplayManager>();
+
         // get sprites
         if(tangibleSprite == null || intangibleSprite == null)
         {
@@ -238,6 +245,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if the game manager is paused, don't update anything.
+        if (gameManager.IsPaused())
+            return;
+
         // gets the directions of movement.
         float xDirec = Input.GetAxisRaw("Horizontal");
         float yDirec = Input.GetAxisRaw("Vertical");
@@ -286,6 +297,10 @@ public class Player : MonoBehaviour
     // fixed update
     private void FixedUpdate()
     {
+        // if the game manager is paused, don't update anything.
+        if (gameManager.IsPaused())
+            return;
+
         // the drag doesn't get applied for the vertical due to gravity being in effect.
 
         // grabs current velocity

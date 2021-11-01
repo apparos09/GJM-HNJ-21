@@ -5,6 +5,9 @@ using UnityEngine;
 // spawns fish
 public class FishSpawner : MonoBehaviour
 {
+    // the game manager.
+    public GameplayManager gameManager;
+
     // the amount of fish allowed 
     public int fishLimit = 30;
 
@@ -40,8 +43,12 @@ public class FishSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // finds the game manager if it's not set.
+        if (gameManager == null)
+            gameManager = FindObjectOfType<GameplayManager>();
+
         // if spawns should be aded on the start.
-        if(addSpawnsOnStart)
+        if (addSpawnsOnStart)
         {
             // finds all spawn points.
             FishSpawnPoint[] spawns = FindObjectsOfType<FishSpawnPoint>();
@@ -71,8 +78,12 @@ public class FishSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if the game manager is paused, don't update anything.
+        if (gameManager.IsPaused())
+            return;
+
         // if the cooldown should be used.
-        if(useCooldown && cooldownTimer > 0.0F)
+        if (useCooldown && cooldownTimer > 0.0F)
         {
             // reduce timer
             cooldownTimer -= Time.deltaTime;
