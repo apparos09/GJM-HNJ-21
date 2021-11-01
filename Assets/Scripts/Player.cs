@@ -202,11 +202,33 @@ public class Player : MonoBehaviour
     // releashes all the fish in the player's list.
     public void ReleaseFishes()
     {
+        // the direction the fish swims off to.
+        Vector2 swimOffDirec = Vector2.right;
+        
+        // the angle of the direction
+        float theta = 0.0F;
+
+
         // unhooks the fishes and clears the list.
         foreach(Fish fish in fishes)
         {
+            // fish exists
             if (fish != null)
+            {
+                // unhooks fish
                 fish.UnHook();
+
+                // offsets angle
+                theta -= 30.0F;
+
+                // the force for moving the fish.
+                Vector2 force = GameplayPhysics.RotateEuler(swimOffDirec, theta, true);
+                force *= fish.swimSpeedMax * Time.deltaTime * 5.0F;
+
+                // pushes fish away
+                fish.rigidBody.AddForce(force, ForceMode2D.Impulse);  
+            }
+                
         }
 
         // removes all.
@@ -275,11 +297,11 @@ public class Player : MonoBehaviour
         // check to see that the player is not moving.
         if(Input.GetAxisRaw("Horizontal") == 0.0F)
         {
-            newVel.x *= GameplayManager.WaterDrag.x * Time.fixedDeltaTime;
+            newVel.x *= GameplayPhysics.GetInstance().WaterDrag.x * Time.fixedDeltaTime;
         }
 
         // stop if moving too slow
-        if (newVel.x == GameplayManager.StopSpeed.x)
+        if (newVel.x == GameplayPhysics.GetInstance().StopSpeed.x)
             newVel.x = 0.0F;
 
         // sets new velocity.

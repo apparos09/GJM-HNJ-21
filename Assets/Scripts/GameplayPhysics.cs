@@ -8,15 +8,11 @@ public class GameplayPhysics
     // the instance
     private static GameplayPhysics instance = null;
 
-    // drag variables
-    private float airDrag = 0.95F;
-    private float waterDrag = 0.90F;
+    // the speed at which an object will stop.
+    private static Vector2 stopSpeed = new Vector3(0.0001F, 0.0001F);
 
-    // value used to determine if the entity should stop or not.
-    private float zeroedVel = 0.001F;
-
-    
-    //
+    // the drag applied when going through water.
+    private static Vector2 waterDrag = new Vector2(0.985F, 1.0F);
 
     // constructor
     private GameplayPhysics()
@@ -42,31 +38,16 @@ public class GameplayPhysics
     {
     }
 
-    // gets the air drag
-    public float AirDrag
+    // returns the stop speed.
+    public Vector2 StopSpeed
     {
-        get
-        {
-            return airDrag;
-        }
+        get { return stopSpeed; }
     }
 
-    // gets the water drag
-    public float WaterDrag
+    // gets the drag factor
+    public Vector2 WaterDrag
     {
-        get
-        {
-            return waterDrag;
-        }
-    }
-
-    // gets zeroed velocity value. This is the standard value.
-    public float ZeroedVelocity
-    {
-        get
-        {
-            return zeroedVel;
-        }
+        get { return waterDrag; }
     }
 
     // rotates to face the mouse.

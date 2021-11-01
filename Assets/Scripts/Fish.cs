@@ -8,8 +8,35 @@ public class Fish : MonoBehaviour
     // the amount of fish in the scene.
     static int fishCount = 0;
 
-    // the fishe's collider.
+    // the game manager.
+    public GameplayManager gameManager;
+
+    // the fish's rigidbody.
+    public Rigidbody2D rigidBody;
+
+    // the fish's collider.
     public Collider2D bodyCol;
+
+    // movement
+    [Header("Movement")]
+
+    // the swimming direction of the fish.
+    public Vector2 swimDirec = Vector2.right;
+
+    // the speed that the fish swims at.
+    public float swimSpeed = 5.0F;
+
+    // the maximum swim speed
+    public float swimSpeedMax = 7.5F;
+
+    // used to change the direction change timer
+    public float direcChangeTimer = 0.0F;
+
+    // start time for changing direction.
+    public float direcChangeStartTime = 45.0F;
+
+    // hook variables
+    [Header("Hook")]
 
     // the parent transformation of the fish.
     private Player hook;
@@ -19,9 +46,6 @@ public class Fish : MonoBehaviour
 
     // the points for getting this fish.
     public float worth = 10;
-
-    // the swimming direction of the fish.
-    public Vector2 swimDirec = Vector2.right;
 
     // updates the fish count when the script is made.
     private void Awake()
@@ -33,6 +57,14 @@ public class Fish : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // gets game manager
+        if (gameManager == null)
+            gameManager = FindObjectOfType<GameplayManager>();
+
+        // gets the rigidbody.
+        if (rigidBody == null)
+            rigidBody = GetComponent<Rigidbody2D>();
+
         // gets the collider.
         if (bodyCol == null)
             bodyCol = GetComponent<Collider2D>();
@@ -71,6 +103,32 @@ public class Fish : MonoBehaviour
                 // save player.
                 hook = player;
             }
+        }
+
+        // if colliding with the bounds
+        if(collision.gameObject.tag == "Bounds")
+        {
+            // push away from obstruction.
+            rigidBody.AddForce(-swimDirec * swimDirec.magnitude * Time.deltaTime, ForceMode2D.Impulse);
+
+            swimDirec = -swimDirec;
+
+            // // TODO: may not be needed.
+            // // random number
+            // int rand = Random.Range(0, 2);
+            // 
+            // // change swim direction
+            // switch(rand)
+            // {
+            //     default:
+            //     case 0: // negative rotation
+            //         swimDirec = GameplayPhysics.RotateEuler(swimDirec, -120.0F, true);
+            //         break;
+            // 
+            //     case 1: // positive rotation.
+            //         swimDirec = GameplayPhysics.RotateEuler(swimDirec, 120.0F, true);
+            //         break;
+            // }
         }
     }
 
@@ -140,7 +198,10 @@ public class Fish : MonoBehaviour
         // rotates fish to be 90 degrees.
         transform.rotation = Quaternion.identity;
         transform.Rotate(Vector3.forward, 90.0F);
+        
+        // physics
         bodyCol.isTrigger = true; // change collision to trigger
+        rigidBody.velocity = Vector3.zero;
     }
 
     // called when the fish becomes unhooked from the fishing rod. This causes the fish to let go.
@@ -164,13 +225,50 @@ public class Fish : MonoBehaviour
     // called to make the fish swim.
     public void Swim()
     {
+        // reduce timer
+        direcChangeTimer -= Time.deltaTime;
 
+        // end of timer
+        if (direcChangeTimer <= 0.0F)
+        {
+            direcChangeTimer = 0.0F;
+            
+            // face right by default.
+            swimDirec = Vector2.right;
+
+            // random orientation
+            swimDirec = GameplayPhysics.RotateEuler(swimDirec, Random.Range(0.0f, 360.0F), true);
+        }
+
+        // cap the velocity.
+        if(rigidBody.velocity.magnitude >= swimSpeedMax)
+        {
+            Vector3 newVel = rigidBody.velocity;
+            newVel.Normalize();
+            newVel *= swimSpeedMax;
+
+            rigidBody.velocity = newVel;
+        }
+
+        rigidBody.AddForce(swimDirec * swimSpeed * Time.deltaTime, ForceMode2D.Impulse);
     }
 
     // Update is called once per frame
     void Update()
     {
         // Debug.Log("On Hook: " + OnHook());
+        
+        // if not on the hook, swim.
+        if(!OnHook())
+            Swim();
+
+        // if the fish is at the sea's surface, the fish's direction is reversed, and it applies force to make them go down.
+        if(transform.position.y >= gameManager.waterSurfacePosY)
+        {
+            // reverses direction and applies force
+            swimDirec = GameplayPhysics.RotateEuler(swimDirec, 180.0F, true);
+            rigidBody.AddForce(Vector2.down * swimSpeedMax * Time.deltaTime, ForceMode2D.Impulse);
+        }
     }
 
     // decreases the fish count.

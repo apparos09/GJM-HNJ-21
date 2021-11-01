@@ -33,9 +33,16 @@ public class CopyTransform : MonoBehaviour
     // most recent target scale.
     private Vector3 lastTargetScale;
 
-    // TODO: make limits 
-    // [Header("Limits")]
-    // bool useX
+    // transformation limits
+    [Header("Limits")]
+    // the lower position limit.
+    public Vector3 posLimitLow = new Vector3();
+
+    // the higher position limit.
+    public Vector3 posLimitHigh = new Vector3();
+
+
+
 
     // Start is called before the first frame update
     void Start()

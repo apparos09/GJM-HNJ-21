@@ -94,6 +94,8 @@ public class FishSpawner : MonoBehaviour
 
             // gets index for spawn position.
             int spawnIndex = Random.Range(0, spawnPositions.Count);
+
+            // spawn position.
             Vector3 spawnPos = new Vector3();
             spawnPos = spawnPositions[spawnIndex]; 
 
