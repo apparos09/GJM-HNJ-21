@@ -179,14 +179,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fbada905d3a5fc43a8eb2d5dec548d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   tangibleSprite: {fileID: 820345190572739514}
   intangibleSprite: {fileID: 820345191584355592}
   rigidBody: {fileID: 820345191327525968}
   boxCol: {fileID: 820345191327525969}
   score: 0
   canPhase: 1
-  force: {x: 1.5, y: 1.5}
-  speedLimit: {x: 7.5, y: 7.5}
+  force: {x: 4, y: 4}
+  speedLimit: {x: 25, y: 25}
   hook: {fileID: 820345191344295636}
   fishes: []
   fishLimit: 5

@@ -7,12 +7,19 @@ using UnityEngine.SceneManagement;
 // title manager
 public class TitleManager : MonoBehaviour
 {
+    // the volume slider.
+    public Slider volumeSlider;
+
     // screen size selector
     public TMPro.TMP_Dropdown screenSizeSel;
 
     // Start is called before the first frame update
     void Start()
     {
+        // there should only be one in the scene.
+        if (volumeSlider == null)
+            volumeSlider = FindObjectOfType<Slider>(true);
+
         // sets to current screen size.
         if(screenSizeSel != null)
         {
@@ -80,6 +87,33 @@ public class TitleManager : MonoBehaviour
                 break;
         }
     }
+
+
+    // passes object
+    public void EnableGameObject(GameObject go)
+    {
+        go.SetActive(true);
+    }
+
+    // passes object
+    public void DisableGameObject(GameObject go)
+    {
+        go.SetActive(false);
+    }
+
+    // toggles if the game object is active or not.
+    public void ToggleGameObjectActive(GameObject go)
+    {
+        go.SetActive(go.activeSelf);
+    }
+
+    // changes volume.
+    public void OnVolumeSliderChange()
+    {
+        if (volumeSlider != null)
+            AudioListener.volume = volumeSlider.value;
+    }
+
 
     // plays the game
     public void PlayGame()

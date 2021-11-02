@@ -30,8 +30,8 @@ public class Player : MonoBehaviour
     public bool canPhase = true;
 
     // force and speed cap
-    public Vector2 force = new Vector2(1.5F, 1.5F);
-    public Vector2 speedLimit = new Vector2(7.5F, 7.5F);
+    public Vector2 force = new Vector2(3.0F, 3.0F);
+    public Vector2 speedLimit = new Vector2(15.0F, 15.0F);
 
     // TODO: setup water resistance.
 
@@ -70,6 +70,14 @@ public class Player : MonoBehaviour
             if (intangibleSprite == null)
                 intangibleSprite = tangibleSprite;
         }
+
+        // if the sprites are enabled.
+        if (tangibleSprite != null && intangibleSprite != null)
+        {
+            tangibleSprite.gameObject.SetActive(true);
+            intangibleSprite.gameObject.SetActive(false);
+        }
+            
 
         // gets rigid body.
         if (rigidBody == null)
@@ -142,8 +150,8 @@ public class Player : MonoBehaviour
     public void MakeTangible()
     {
         // changes sprites
-        tangibleSprite.enabled = true;
-        intangibleSprite.enabled = false;
+        tangibleSprite.gameObject.SetActive(true);
+        intangibleSprite.gameObject.SetActive(false);
         tangible = true;
 
         // changes collider
@@ -160,8 +168,8 @@ public class Player : MonoBehaviour
     public void MakeIntangible()
     {
         // changes sprites
-        tangibleSprite.enabled = false;
-        intangibleSprite.enabled = true;
+        tangibleSprite.gameObject.SetActive(false);
+        intangibleSprite.gameObject.SetActive(true);
         tangible = false;
         
         // changes collider
