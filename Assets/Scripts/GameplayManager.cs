@@ -62,6 +62,9 @@ public class GameplayManager : MonoBehaviour
 
         // sets the timer start.
         timer = timerStart;
+
+        // Makes sure the time scale is normal.
+        Time.timeScale = 1.0F;
     }
 
     // returns 'true' if teh game is paused.
@@ -70,28 +73,46 @@ public class GameplayManager : MonoBehaviour
         return pausedGame;
     }
 
+    // Sets if the game is paused or not.
+    public void SetPausedGame(bool paused)
+    {
+        pausedGame = paused;
+        
+        // Checks if the game is paused or not.
+        if(pausedGame)
+        {
+            Time.timeScale = 0.0F;
+        }
+        else
+        {
+            Time.timeScale = 1.0F;
+        }
+    }
+
     // pauses the game.
     public void PauseGame()
     {
-        pausedGame = true;
+        SetPausedGame(true);
     }
 
     // unpauses the game.
     public void UnpauseGame()
     {
-        pausedGame = false;
+        SetPausedGame(false);
     }
 
     // toggles pause to either pause or unpause the game.
     public void PauseToggle()
     {
-        pausedGame = !pausedGame;
-        Time.timeScale = (pausedGame) ? 0.0F : 1.0F;
+        SetPausedGame(!pausedGame);
     }
 
     // quits the game, returning to the title screen.
     public void GameQuit()
     {
+        // Makes sure the time scale is normal.
+        Time.timeScale = 1.0F;
+
         // returns to the title screen
         SceneManager.LoadScene("TitleScene");
 
@@ -126,6 +147,9 @@ public class GameplayManager : MonoBehaviour
         // set values
         gi.finalScore = player.score;
         gi.gameLength = timerStart;
+
+        // Makes sure the time scale is normal.
+        Time.timeScale = 1.0F;
 
         SceneManager.LoadScene("EndScene");
     }
