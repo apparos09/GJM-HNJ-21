@@ -13,6 +13,9 @@ public class TitleManager : MonoBehaviour
     // screen size selector
     public TMPro.TMP_Dropdown screenSizeSel;
 
+    // The exit button.
+    public Button exitButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,20 +39,42 @@ public class TitleManager : MonoBehaviour
                 // checks screen size to see default value.
                 switch (screenY)
                 {
-                    case 1080: // big
+                    case 1080: // big (1920 X 1080)
                         screenSizeSel.value = 1;
                         break;
 
-                    case 720: // medium
+                    case 720: // medium (1280 X 720)
                         screenSizeSel.value = 2;
                         break;
 
-                    case 480: // small
+                    case 480: // small (1024 X 576)
                         screenSizeSel.value = 3;
                         break;
                 }
             }
             
+        }
+
+        // If this is the WebGL platform.
+        if(Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            // Disable the size change.
+            if (screenSizeSel != null)
+                screenSizeSel.interactable = false;
+
+            // Disable the exit button.
+            if(exitButton != null)
+                exitButton.interactable = false;
+        }
+        else // Not WebGL.
+        {
+            // Enable the size change.
+            if (screenSizeSel != null)
+                screenSizeSel.interactable = true;
+
+            // Enable the exit button.
+            if (exitButton != null)
+                exitButton.interactable = true;
         }
     }
 
@@ -81,8 +106,8 @@ public class TitleManager : MonoBehaviour
                 Screen.fullScreen = false;
                 break;
 
-            case 3: // 854 X 480 (854 rounded up from 853.333)
-                Screen.SetResolution(854, 480, FullScreenMode.Windowed);
+            case 3: // 1024 X 576
+                Screen.SetResolution(1024, 576, FullScreenMode.Windowed);
                 Screen.fullScreen = false;
                 break;
         }

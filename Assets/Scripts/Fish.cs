@@ -90,10 +90,10 @@ public class Fish : MonoBehaviour
             // gets the fish component.
             Player player = collision.gameObject.GetComponent<Player>();
 
-            // already on hook, so do nothing/
             // TODO: make more efficient.
-            if (player == hook)
-                return;
+            // Optimized was removed to fix a glitch where the fish couldn't be hooked again after being let go.
+            // if (player == hook)
+            //     return;
 
             // hook is tangible.
             if (player.IsTangible())
@@ -152,10 +152,10 @@ public class Fish : MonoBehaviour
             // gets the fish component.
             Player player = collision.GetComponent<Player>();
 
-            // already on hook, so do nothing/
             // TODO: make more efficient.
-            if (player == hook)
-                return;
+            // Optimized was removed to fix a glitch where the fish couldn't be hooked again after being let go.
+            // if (player == hook)
+            //     return;
 
             // hook is tangible.
             if (player.IsTangible())

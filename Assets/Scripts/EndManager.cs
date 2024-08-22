@@ -13,6 +13,9 @@ public class EndManager : MonoBehaviour
     // the text to show the final score
     public TMPro.TextMeshProUGUI scoreText = null;
 
+    // The exit button.
+    public Button exitButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +32,23 @@ public class EndManager : MonoBehaviour
         // destroys the game object.
         if(gameInfo != null)
             Destroy(gameInfo.gameObject);
+
+
+        // The exit button is set.
+        if (exitButton != null)
+        {
+            // If in WebGL, disable the button.
+            if(Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                exitButton.interactable = false;
+            }
+            // If not in WebGL, enable the button.
+            else
+            {
+                exitButton.interactable = true;
+            }
+        }
+
     }
 
     // returns to the title screen.

@@ -2125,6 +2125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 1085445827}
   screenSizeSel: {fileID: 1520226955}
+  exitButton: {fileID: 1903868926}
 --- !u!1 &1083340952
 GameObject:
   m_ObjectHideFlags: 0
@@ -3323,7 +3324,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1494117840
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3673,7 +3674,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: 1280 X 720
       m_Image: {fileID: 0}
-    - m_Text: 854 X 480
+    - m_Text: 1024 X 576
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
